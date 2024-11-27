@@ -22,7 +22,7 @@ export type EmployeeTurnRquestParams = {
 };
 
 export type CreateEmployeePayrollTurnRequest = {
-  employee: number;
+  employee?: number;
   date: string;
 };
 

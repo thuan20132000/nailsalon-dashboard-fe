@@ -62,6 +62,11 @@ const EmployeeSalaryListTable: React.FC = () => {
       key: 'email',
     },
     {
+      title: 'Commission Rate',
+      dataIndex: 'commission_rate',
+      key: 'commission_rate',
+    },
+    {
       title: 'Action',
       key: 'action',
       render: (_, record) => {

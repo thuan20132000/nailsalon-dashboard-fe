@@ -1,13 +1,16 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputNumberProps, InputRef, StatisticProps, TableProps } from 'antd';
-import { Button, Col, DatePicker, Flex, Form, Input, Popconfirm, Row, Space, Statistic, Table, Typography } from 'antd';
+import { Button, Col, DatePicker, Flex, Form, Input, InputNumber, Popconfirm, Row, Space, Statistic, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PayrollStore, usePayrollStore } from '@/store/usePayrollStore';
 import { EmployeePayrollTurn, PayrollTurn } from '@/types/payroll';
 import { DeleteFilled, DeleteOutlined, SmileOutlined } from '@ant-design/icons';
 import { NotificationStore, useNotificationStore } from '@/store/useNotificationStore';
+import UserAvatar from '@/components/Users/UserAvatar';
+import EmployeeSelection from './PayrollEmployeeSelection';
+import { EmployeeType } from '@/types/user';
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -135,6 +138,9 @@ const PayrollTable: React.FC = () => {
   const [totalTurnPrice, setTotalTurnPrice] = useState(0)
   const { notify } = useNotificationStore((state: NotificationStore) => state)
   const [turnDate, setTurnDate] = useState<string | null>(turn_date)
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeType>({
+    id: Number(employee_id)
+  })
 
   const {
     getEmployeePayrollDailyTurns,
@@ -164,13 +170,26 @@ const PayrollTable: React.FC = () => {
       title: 'Price',
       dataIndex: 'price',
       editable: true,
+      // render(value, record, index) {
+      //   return (
+      //     <InputNumber
+      //       defaultValue={value}
+      //       onChange={(value) => {
+      //         const newRecord = { ...record, price: value }
+      //         handleSave(newRecord)
+      //       }}
+      //     />
+      //   )
+      // },
     },
     {
       title: 'operation',
       dataIndex: 'operation',
       render: (_, record) =>
         dataSource.length >= 1 ? (
-          <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteRow(record)}>
+          <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteRow(record)}
+            okType='danger'
+          >
             <DeleteFilled style={{ color: 'red' }} />
           </Popconfirm>
         ) : null,
@@ -267,7 +286,7 @@ const PayrollTable: React.FC = () => {
   const handleGetEmployeeDailyTurns = async () => {
     try {
       const params = {
-        employee: Number(employee_id),
+        employee: selectedEmployee.id,
         date: turnDate || ''
       }
       let res = await getEmployeePayrollDailyTurns(params)
@@ -283,8 +302,7 @@ const PayrollTable: React.FC = () => {
           service_name: item.service_name || '-',
         }
       })
-      console.log('dataSource: ',data);
-      
+
       setDataSource(data || [])
 
     } catch (error) {
@@ -294,9 +312,6 @@ const PayrollTable: React.FC = () => {
 
   }
 
-  useEffect(() => {
-    handleGetEmployeeDailyTurns()
-  }, [turnDate, employee_id])
 
   const router = useRouter();
   const onDateChange = (date: any) => {
@@ -307,6 +322,13 @@ const PayrollTable: React.FC = () => {
     // change searchParams
     router.push(`payroll?date=${date.format(dateFormat)}&employee=${employee_id}`,);
   }
+
+  useEffect(() => {
+    handleGetEmployeeDailyTurns()
+    console.log('selectedEmployee: ', selectedEmployee);
+    router.push(`payroll?date=${turnDate}&employee=${selectedEmployee.id}`,);
+
+  }, [turnDate, employee_id, selectedEmployee])
 
 
 
@@ -319,12 +341,15 @@ const PayrollTable: React.FC = () => {
             format={dateFormat}
             onChange={onDateChange}
           />
-          {/* <Statistic
-            value={totalTurnPrice}
-            title='Total: '
-            style={{ flex: 1, display: 'flex', alignItems: 'center', paddingLeft: 20 }}
-            valueStyle={{ paddingLeft: 10 }}
-          /> */}
+          <Flex>
+            <EmployeeSelection
+              initialEmployee={{ id: Number(employee_id) }}
+              onChange={(employee) => {
+                setSelectedEmployee(employee)
+              }}
+            />
+
+          </Flex>
         </Flex>
       </Flex>
       <Table<PayrollTurn>
