@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PayrollStore, usePayrollStore } from '@/store/usePayrollStore';
 import { EmployeePayrollTurn, PayrollTurn } from '@/types/payroll';
-import { DeleteFilled, DeleteOutlined, SmileOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ArrowRightOutlined, DeleteFilled, DeleteOutlined, LeftCircleOutlined, LeftCircleTwoTone, RightCircleTwoTone, SmileOutlined } from '@ant-design/icons';
 import { NotificationStore, useNotificationStore } from '@/store/useNotificationStore';
 import UserAvatar from '@/components/Users/UserAvatar';
 import EmployeeSelection from './PayrollEmployeeSelection';
@@ -323,6 +323,20 @@ const PayrollTable: React.FC = () => {
     router.push(`payroll?date=${date.format(dateFormat)}&employee=${employee_id}`,);
   }
 
+  const onNextDateClick = () => {
+    console.log('====================================');
+    console.log('turnDate: ', turnDate);
+    console.log('====================================');
+    setTurnDate(dayjs(turnDate).add(1, 'day').format(dateFormat))
+  }
+
+  const onPreviousDateClick = () => {
+    console.log('====================================');
+    console.log('turnDate: ', turnDate);
+    console.log('====================================');
+    setTurnDate(dayjs(turnDate).subtract(1, 'day').format(dateFormat))
+  }
+
   useEffect(() => {
     handleGetEmployeeDailyTurns()
     console.log('selectedEmployee: ', selectedEmployee);
@@ -336,11 +350,22 @@ const PayrollTable: React.FC = () => {
     <Form form={form} component={false}>
       <Flex className='mb-2'>
         <Flex>
+          <Button
+            onClick={onPreviousDateClick}
+            icon={<LeftCircleTwoTone />}
+          />
           <DatePicker
             defaultValue={dayjs(turn_date, dateFormat)}
             format={dateFormat}
+            value={dayjs(turnDate, dateFormat)}
             onChange={onDateChange}
+            className='ml-2 mr-2'
           />
+          <Button
+            onClick={onNextDateClick}
+            icon={<RightCircleTwoTone />}
+          />
+
           <Flex>
             <EmployeeSelection
               initialEmployee={{ id: Number(employee_id) }}
