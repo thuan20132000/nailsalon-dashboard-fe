@@ -37,12 +37,19 @@ const useAuthenticationStore = create<AuthenticationState>((set) => ({
     set({ isAuthenticated: false, user: null });
   },
   checkAuth: (): boolean => {
-    const token = localStorage.getItem('token');
-    let user = localStorage.getItem('user');
-    const isAuth = token ? true : false;
-
-    set({ isAuthenticated: isAuth, user: user ? JSON.parse(user || "") : null });
-    return isAuth;
+    try {
+      const token = localStorage.getItem('token');
+      let user = localStorage.getItem('user');
+      const isAuth = token ? true : false;
+      if(!user) {
+        user = null;
+      }
+      set({ isAuthenticated: isAuth, user: user ? JSON.parse(user) : null });
+      return isAuth;
+      
+    } catch (error) {
+      return false;
+    }
   },
   isAuthenticating: false,
   setIsAuthenticating: (isAuthenticating) => set({ isAuthenticating }),
