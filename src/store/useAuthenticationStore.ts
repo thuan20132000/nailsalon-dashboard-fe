@@ -38,8 +38,9 @@ const useAuthenticationStore = create<AuthenticationState>((set) => ({
   },
   checkAuth: (): boolean => {
     const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    let user = localStorage.getItem('user') || null;
     const isAuth = token ? true : false;
+
     set({ isAuthenticated: isAuth, user: user ? JSON.parse(user) : null });
     return isAuth;
   },
