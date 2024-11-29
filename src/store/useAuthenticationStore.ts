@@ -41,7 +41,7 @@ const useAuthenticationStore = create<AuthenticationState>((set) => ({
     let user = localStorage.getItem('user');
     const isAuth = token ? true : false;
 
-    set({ isAuthenticated: isAuth, user: user ? JSON.parse(user) : null });
+    set({ isAuthenticated: isAuth, user: user ? JSON.parse(user || "") : null });
     return isAuth;
   },
   isAuthenticating: false,
