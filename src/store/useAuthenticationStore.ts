@@ -28,7 +28,7 @@ const useAuthenticationStore = create<AuthenticationState>((set) => ({
     const res = await authenticationAPI.login(user);
     localStorage.setItem('token', res.access);
     localStorage.setItem('refresh', res.refresh);
-    localStorage.setItem('user', JSON.stringify(res.user));
+    localStorage.setItem('user', JSON.stringify(res.user || null));
     set({ isAuthenticated: true, user: res?.user || null });
     return res;
   },
