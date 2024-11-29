@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputNumberProps, InputRef, StatisticProps, TableProps } from 'antd';
-import { Button, Col, DatePicker, Flex, Form, Input, InputNumber, Popconfirm, Row, Space, Statistic, Table, Typography } from 'antd';
+import { Button, Card, Col, DatePicker, Flex, Form, Input, InputNumber, Popconfirm, Row, Space, Statistic, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PayrollStore, usePayrollStore } from '@/store/usePayrollStore';
@@ -348,33 +348,32 @@ const PayrollTable: React.FC = () => {
 
   return (
     <Form form={form} component={false}>
-      <Flex className='mb-2'>
+      <Flex className='bg-gray-3 p-2 rounded-md mb-4' justify='flex-end' align='end'>
+        <Button
+          onClick={onPreviousDateClick}
+          icon={<LeftCircleTwoTone />}
+          type='text'
+        />
+        <DatePicker
+          defaultValue={dayjs(turn_date, dateFormat)}
+          format={dateFormat}
+          value={dayjs(turnDate, dateFormat)}
+          onChange={onDateChange}
+          className='ml-2 mr-2'
+        />
+        <Button
+          onClick={onNextDateClick}
+          icon={<RightCircleTwoTone />}
+          type='text'
+        />
         <Flex>
-          <Button
-            onClick={onPreviousDateClick}
-            icon={<LeftCircleTwoTone />}
-          />
-          <DatePicker
-            defaultValue={dayjs(turn_date, dateFormat)}
-            format={dateFormat}
-            value={dayjs(turnDate, dateFormat)}
-            onChange={onDateChange}
-            className='ml-2 mr-2'
-          />
-          <Button
-            onClick={onNextDateClick}
-            icon={<RightCircleTwoTone />}
+          <EmployeeSelection
+            initialEmployee={{ id: Number(employee_id) }}
+            onChange={(employee) => {
+              setSelectedEmployee(employee)
+            }}
           />
 
-          <Flex>
-            <EmployeeSelection
-              initialEmployee={{ id: Number(employee_id) }}
-              onChange={(employee) => {
-                setSelectedEmployee(employee)
-              }}
-            />
-
-          </Flex>
         </Flex>
       </Flex>
       <Table<PayrollTurn>
