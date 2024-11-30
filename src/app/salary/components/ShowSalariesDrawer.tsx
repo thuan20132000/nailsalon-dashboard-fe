@@ -57,19 +57,20 @@ const ShowSalariesDrawer = (props: Props) => {
       title: 'Commission Rate',
       dataIndex: 'employee__commission_rate',
       key: 'employee__commision_rate',
+      className:'text-sm',
     },
     {
       title: 'Gross Pay',
       dataIndex: 'gross_pay',
       key: 'gross_pay',
-      render: (text) => <Statistic value={text} precision={2} valueStyle={{ fontSize: 18 }} />,
+      render: (text) => <Statistic value={text} precision={2} valueStyle={{ fontSize: 14 }} />,
 
     },
     {
       title: 'Net Pay',
       dataIndex: 'net_pay',
       key: 'net_pay',
-      render: (text) => <Statistic value={text} precision={2} valueStyle={{ fontSize: 18 }} />,
+      render: (text) => <Statistic value={text} precision={2} valueStyle={{ fontSize: 14 }} />,
     },
     {
       title: 'Action',
@@ -175,9 +176,9 @@ const ShowSalariesDrawer = (props: Props) => {
         </Button>
       </Flex>
       <Drawer
-        title="Employee Salaries" width={'80%'} closable={false} onClose={onClose} open={open}
+        width={'80%'} closable={false} onClose={onClose} open={open}
       >
-        <Flex className='mb-2'>
+        <Flex className='mb-2 justify-end'>
           <RangePicker
             className="mr-2"
             onChange={onChangeSalaryDateRange}
@@ -191,6 +192,7 @@ const ShowSalariesDrawer = (props: Props) => {
 
         <Table
           columns={columns}
+          rowClassName={'cursor-pointer hover:bg-gray-100 hover:shadow-lg'}
           dataSource={salaries}
           footer={() => (
             <Flex flex={1} justify='space-around'>
