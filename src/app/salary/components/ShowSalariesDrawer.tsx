@@ -163,6 +163,12 @@ const ShowSalariesDrawer = (props: Props) => {
 
   }
 
+  const printTable = () => {
+    console.log('print table');
+    window.print();
+  }
+
+
   return (
     <div>
       <Flex>
@@ -217,6 +223,7 @@ const ShowSalariesDrawer = (props: Props) => {
                 valueStyle={{ fontSize: 18, fontWeight: "bold" }}
                 prefix="$"
               />
+              <Button onClick={printTable}>Print</Button>
             </Flex>
           )}
           pagination={false}

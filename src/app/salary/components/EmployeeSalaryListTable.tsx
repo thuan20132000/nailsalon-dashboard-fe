@@ -29,8 +29,9 @@ const EmployeeSalaryListTable: React.FC = () => {
   const showEmployeeDetail = (employee: EmployeeType) => {
     console.log('showEmployeeDetail: ', employee);
     router.push(`/employees/detail?employee_id=${employee.id}`);
-
+    
   }
+
 
   const columns: TableProps<EmployeeType>['columns'] = [
     // {
