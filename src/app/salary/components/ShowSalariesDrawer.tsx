@@ -184,7 +184,8 @@ const ShowSalariesDrawer = (props: Props) => {
       <Drawer
         width={'80%'} closable={false} onClose={onClose} open={open}
       >
-        <Flex className='mb-2 justify-end'>
+        <Flex className='mb-2 justify-between'>
+          <Button onClick={onClose}>Close</Button>
           <RangePicker
             className="mr-2"
             onChange={onChangeSalaryDateRange}
