@@ -175,7 +175,7 @@ const ShowSalariesDrawer = (props: Props) => {
         </Button>
       </Flex>
       <Drawer
-        title="Employee Salaries" width={'70%'} closable={false} onClose={onClose} open={open}
+        title="Employee Salaries" width={'80%'} closable={false} onClose={onClose} open={open}
       >
         <Flex className='mb-2'>
           <RangePicker
