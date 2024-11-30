@@ -7,6 +7,8 @@ import { create } from 'zustand';
 
 
 export type PayrollStore = {
+  isLoading?: boolean;
+  setLoading?: (loading: boolean) => void;
   employees: EmployeeType[];
   employee: EmployeeType | undefined;
   employeePayrollTurns: EmployeePayrollTurn[];
@@ -23,6 +25,8 @@ export const usePayrollStore = create<PayrollStore>((set) => ({
   employees: [],
   employee: undefined,
   employeePayrollTurns: [],
+  isLoading: false,
+  setLoading: (loading) => set({ isLoading: loading }),
   getEmployeePayrollTurns: async (params) => {
     const data = await payrollTurnAPI.getEmployeePayrollTurn(params);
     set({ employeePayrollTurns: data.data });
@@ -41,8 +45,19 @@ export const usePayrollStore = create<PayrollStore>((set) => ({
     return data;
   },
   bulkUpdatePayrollTurn: async (empPayrollTurn, payrollTurn) => {
-    const data = await payrollTurnAPI.bulkUpdatePayrollTurn(empPayrollTurn, payrollTurn);
-    return data;
+    try {
+      set({ isLoading: true });
+
+      const data = await payrollTurnAPI.bulkUpdatePayrollTurn(empPayrollTurn, payrollTurn);
+      return data;
+
+    } catch (error) {
+      throw error;
+    } finally {
+      setTimeout(() => {
+        set({ isLoading: false });
+      }, 1200);
+    }
   },
   createEmployeePayrollTurnByDate: async (params: CreateEmployeePayrollTurnRequest) => {
     const data = await payrollTurnAPI.createEmployeePayrollTurnByDate(params);

@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputNumberProps, InputRef, StatisticProps, TableProps } from 'antd';
-import { Button, Card, Col, DatePicker, Flex, Form, Input, InputNumber, Popconfirm, Row, Space, Statistic, Table, Typography } from 'antd';
+import { Button, Card, Col, DatePicker, Flex, Form, Input, InputNumber, Popconfirm, Row, Space, Spin, Statistic, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PayrollStore, usePayrollStore } from '@/store/usePayrollStore';
@@ -146,7 +146,8 @@ const PayrollTable: React.FC = () => {
     getEmployeePayrollDailyTurns,
     deletePayrollTurn,
     bulkUpdatePayrollTurn,
-    createEmployeePayrollTurnByDate
+    createEmployeePayrollTurnByDate,
+    isLoading
   } = usePayrollStore((state: PayrollStore) => state)
 
   const [dataSource, setDataSource] = useState<PayrollTurn[]>([]);
@@ -226,13 +227,12 @@ const PayrollTable: React.FC = () => {
 
 
   const handleUpdate = () => {
-    console.log('====================================');
-    console.log('dataSource: ', dataSource);
-    console.log('====================================');
+ 
     if (employeeDateTurn) {
       bulkUpdatePayrollTurn(employeeDateTurn, dataSource)
         .then((res) => {
           notify('success', 'Update payroll turn success')
+          handleGetEmployeeDailyTurns()
         })
         .catch((error) => {
           notify('error', 'Update payroll turn failed')
@@ -315,25 +315,16 @@ const PayrollTable: React.FC = () => {
 
   const router = useRouter();
   const onDateChange = (date: any) => {
-    console.log('====================================');
-    console.log('dateString: ', date.format(dateFormat));
-    console.log('====================================');
     setTurnDate(date.format(dateFormat))
     // change searchParams
     router.push(`payroll?date=${date.format(dateFormat)}&employee=${employee_id}`,);
   }
 
   const onNextDateClick = () => {
-    console.log('====================================');
-    console.log('turnDate: ', turnDate);
-    console.log('====================================');
     setTurnDate(dayjs(turnDate).add(1, 'day').format(dateFormat))
   }
 
   const onPreviousDateClick = () => {
-    console.log('====================================');
-    console.log('turnDate: ', turnDate);
-    console.log('====================================');
     setTurnDate(dayjs(turnDate).subtract(1, 'day').format(dateFormat))
   }
 
@@ -348,6 +339,7 @@ const PayrollTable: React.FC = () => {
 
   return (
     <Form form={form} component={false}>
+      <Spin spinning={isLoading} fullscreen/>
       <Flex className='bg-gray-3 p-2 rounded-md mb-4' justify='flex-end' align='end'>
         <Button
           onClick={onPreviousDateClick}
