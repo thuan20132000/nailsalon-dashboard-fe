@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PayrollStore, usePayrollStore } from '@/store/usePayrollStore';
 import { EmployeePayrollTurn, PayrollTurn } from '@/types/payroll';
-import { ArrowLeftOutlined, ArrowRightOutlined, DeleteFilled, DeleteOutlined, LeftCircleOutlined, LeftCircleTwoTone, RightCircleTwoTone, SmileOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ArrowRightOutlined, CalendarFilled, CalendarOutlined, DeleteFilled, DeleteOutlined, LeftCircleOutlined, LeftCircleTwoTone, RightCircleTwoTone, SmileOutlined } from '@ant-design/icons';
 import { NotificationStore, useNotificationStore } from '@/store/useNotificationStore';
 import UserAvatar from '@/components/Users/UserAvatar';
 import EmployeeSelection from './PayrollEmployeeSelection';
@@ -227,7 +227,7 @@ const PayrollTable: React.FC = () => {
 
 
   const handleUpdate = () => {
- 
+
     if (employeeDateTurn) {
       bulkUpdatePayrollTurn(employeeDateTurn, dataSource)
         .then((res) => {
@@ -330,42 +330,57 @@ const PayrollTable: React.FC = () => {
 
   useEffect(() => {
     handleGetEmployeeDailyTurns()
-    console.log('selectedEmployee: ', selectedEmployee);
     router.push(`payroll?date=${turnDate}&employee=${selectedEmployee.id}`,);
 
   }, [turnDate, employee_id, selectedEmployee])
 
+  const showEmployeePayrollCalendar = () => {
+    router.push(`/salary/payroll-calendar?employee_id=${selectedEmployee.id}`);
+  }
 
 
   return (
     <Form form={form} component={false}>
-      <Spin spinning={isLoading} fullscreen/>
-      <Flex className='bg-gray-3 p-2 rounded-md mb-4' justify='flex-end' align='end'>
+      <Spin spinning={isLoading} fullscreen />
+      <Flex className='bg-gray-3 p-2 rounded-md mb-4' justify='space-between' align='end'>
         <Button
-          onClick={onPreviousDateClick}
-          icon={<LeftCircleTwoTone />}
-          type='text'
-        />
-        <DatePicker
-          defaultValue={dayjs(turn_date, dateFormat)}
-          format={dateFormat}
-          value={dayjs(turnDate, dateFormat)}
-          onChange={onDateChange}
-          className='ml-2 mr-2'
-        />
-        <Button
-          onClick={onNextDateClick}
-          icon={<RightCircleTwoTone />}
-          type='text'
-        />
+          onClick={showEmployeePayrollCalendar}
+          type='default'
+          title='Calendar'
+        >
+          <CalendarFilled /> Calendar
+        </Button>
         <Flex>
-          <EmployeeSelection
-            initialEmployee={{ id: Number(employee_id) }}
-            onChange={(employee) => {
-              setSelectedEmployee(employee)
-            }}
-          />
 
+          <Flex>
+            <Button
+              onClick={onPreviousDateClick}
+              icon={<LeftCircleTwoTone />}
+              type='text'
+            />
+            <DatePicker
+              defaultValue={dayjs(turn_date, dateFormat)}
+              format={dateFormat}
+              value={dayjs(turnDate, dateFormat)}
+              onChange={onDateChange}
+              className='ml-2 mr-2'
+            />
+            <Button
+              onClick={onNextDateClick}
+              icon={<RightCircleTwoTone />}
+              type='text'
+            />
+
+          </Flex>
+          <Flex>
+            <EmployeeSelection
+              initialEmployee={{ id: Number(employee_id) }}
+              onChange={(employee) => {
+                setSelectedEmployee(employee)
+              }}
+            />
+
+          </Flex>
         </Flex>
       </Flex>
       <Table<PayrollTurn>
